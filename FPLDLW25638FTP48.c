@@ -1,32 +1,43 @@
 #include <stdio.h>
 
-int main() {
-    int hours, minutes, seconds;
+int calculate_total_seconds(int hours, int minutes, int seconds);
 
-    // Nhập giờ, phút, giây
-    printf("Nhập giờ: ");
-    if (scanf("%d", &hours) != 1 || hours < 0) {
-        printf("Giá trị giờ không hợp lệ.\n");
-        return 1;
+/*
+ * Test cases run command
+ * Windows: .\FPLDLW25638FTP48.exe FFPLDLW25638FTP48IN01.txt FPLDLW25638FTP48OUT01.txt FPLDLW25638FTP48IN02.txt FPLDLW25638FTP48OUT02.txt FPLDLW25638FTP48IN03.txt FPLDLW25638FTP48OUT03.txt
+ * Linux: ./FPLDLW25638FTP48 FFPLDLW25638FTP48IN01.txt FPLDLW25638FTP48OUT01.txt FPLDLW25638FTP48IN02.txt FPLDLW25638FTP48OUT02.txt FPLDLW25638FTP48IN03.txt FPLDLW25638FTP48OUT03.txt
+*/
+int main(int argc, char * argv[]) {
+    if (argc <= 2 || argc % 2 != 1) {
+        printf("Invalid number of arguments.\n");
+        return 3;
     }
-
-    printf("Nhập phút: ");
-    if (scanf("%d", &minutes) != 1 || minutes < 0 || minutes >= 60) {
-        printf("Giá trị phút không hợp lệ (0-59).\n");
-        return 1;
+    for (int i = 1; i < argc; i += 2) {
+        char* test_input_filename = argv[i];
+        FILE* test_input_file = fopen(test_input_filename, "r");
+        if (test_input_file == NULL) {
+            printf("Test input file %s not found.\n", test_input_filename);
+            return 1;
+        }
+        char* test_output_filename = argv[i + 1];
+        FILE* test_output_file = fopen(test_output_filename, "w+");
+        if (test_output_file == NULL) {
+            printf("Test output file %s not found.\n", test_output_filename);
+            return 1;
+        }
+        int hours, minutes, seconds;
+        if (fscanf(test_input_file, "%d:%d:%d", &hours, &minutes, &seconds) == EOF) {
+            printf("Invalid input format.\n");
+            return 2;
+        }
+        fclose(test_input_file);
+        int total_seconds = calculate_total_seconds(hours, minutes, seconds);
+        fprintf(test_output_file, "%d", total_seconds);
+        fclose(test_output_file);
     }
-
-    printf("Nhập giây: ");
-    if (scanf("%d", &seconds) != 1 || seconds < 0 || seconds >= 60) {
-        printf("Giá trị giây không hợp lệ (0-59).\n");
-        return 1;
-    }
-
-    // Tính tổng số giây
-    long total_seconds = (long) hours * 3600 + (long) minutes * 60 + seconds;
-
-    // In kết quả
-    printf("\nTổng số giây tương ứng: %ld giây\n", total_seconds);
-
     return 0;
+}
+
+int calculate_total_seconds(const int hours, const int minutes, const int seconds) {
+    return hours * 3600 + minutes * 60 + seconds;
 }
