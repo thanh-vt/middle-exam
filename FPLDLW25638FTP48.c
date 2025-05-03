@@ -9,25 +9,25 @@ int calculate_total_seconds(int hours, int minutes, int seconds);
 */
 int main(int argc, char * argv[]) {
     if (argc <= 2 || argc % 2 != 1) {
-        printf("Invalid number of arguments.\n");
+        fprintf(stderr, "Invalid number of arguments.\n");
         return 1;
     }
     for (int i = 1; i < argc; i += 2) {
         char* test_input_filename = argv[i];
         FILE* test_input_file = fopen(test_input_filename, "r");
         if (test_input_file == NULL) {
-            printf("Test input file %s not found.\n", test_input_filename);
+            fprintf(stderr, "Test input file %s not found.\n", test_input_filename);
             return 2;
         }
         char* test_output_filename = argv[i + 1];
         FILE* test_output_file = fopen(test_output_filename, "w+");
         if (test_output_file == NULL) {
-            printf("Test output file %s not found.\n", test_output_filename);
+            fprintf(stderr, "Test output file %s not found.\n", test_output_filename);
             return 3;
         }
         int hours, minutes, seconds;
         if (fscanf(test_input_file, "%d:%d:%d", &hours, &minutes, &seconds) == EOF) {
-            printf("Invalid input format.\n");
+            fprintf(stderr, "Invalid input format.\n");
             return 4;
         }
         fclose(test_input_file);
