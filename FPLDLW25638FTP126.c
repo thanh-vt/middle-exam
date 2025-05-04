@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
-// Hàm kiểm tra số nguyên tố
 int is_prime(int x);
 
 int main(int argc, char *argv[]) {
@@ -23,7 +21,7 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Test output file %s not found.\n", test_output_filename);
             return 3;
         }
-        int n = 0;
+        int n = 0; // current index
         int buff_size = 10;
         int *arr = malloc(buff_size * sizeof(int));
         if (arr == NULL) {
@@ -31,8 +29,8 @@ int main(int argc, char *argv[]) {
             return 6;
         }
         int x;
-        while (fscanf(test_input_file, "%d", &x) == EOF) {
-            if (n > buff_size) {
+        while (fscanf(test_input_file, "%d ", &x) != EOF) {
+            if (n >= buff_size) {
                 buff_size += 10;
                 int* temp_arr = realloc(arr, buff_size * sizeof(int));
                 if (temp_arr == NULL) {
@@ -46,25 +44,12 @@ int main(int argc, char *argv[]) {
             n++;
         }
         fclose(test_input_file);
-        // Nhập mảng
-        for (int i = 0; i < n; i++) {
-            printf("arr[%d] = ", i);
-            scanf("%d", &arr[i]);
-        }
 
-        // Tìm và in các số nguyên tố
-        printf("\nCác số nguyên tố trong mảng là:\n");
-        int found = 0;
-        for (int i = 0; i < n; i++) {
-            if (is_prime(arr[i])) {
-                printf("%d  ", arr[i]);
-                found = true;
+        for (int j = 0; j < n; j++) {
+            if (is_prime(arr[j])) {
+                fprintf(test_output_file, "%8d ", arr[j]);
             }
         }
-        if (!found) {
-            printf("Không có số nguyên tố nào.\n");
-        }
-        printf("\n");
 
         free(arr);
         fclose(test_output_file);
