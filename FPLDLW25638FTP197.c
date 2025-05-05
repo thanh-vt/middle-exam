@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+ * Test cases run command
+ * Windows: .\FPLDLW25638FTP197.exe FFPLDLW25638FTP197IN01.txt FPLDLW25638FTP197OUT01.txt FPLDLW25638FTP197IN02.txt FPLDLW25638FTP197OUT02.txt FPLDLW25638FTP197IN03.txt FPLDLW25638FTP197OUT03.txt
+ * Linux: ./FPLDLW25638FTP197 FFPLDLW25638FTP197IN01.txt FPLDLW25638FTP197OUT01.txt FPLDLW25638FTP197IN02.txt FPLDLW25638FTP197OUT02.txt FPLDLW25638FTP197IN03.txt FPLDLW25638FTP197OUT03.txt
+*/
 int main(int argc, char *argv[]) {
     if (argc <= 2 || argc % 2 != 1) {
         fprintf(stderr, "Invalid number of arguments.\n");
@@ -23,22 +28,28 @@ int main(int argc, char *argv[]) {
         int **matrix = NULL;
         int rows = 0;
         int cols = 0;
-        char line[1000];
+        char line[1000]; // max 1000 chars
 
         while (fgets(line, sizeof(line), test_input_file)) {
             int *row = NULL;
-            int value;
             int count = 0;
             char *token = strtok(line, " \t\n");
 
-            // Count number of columns
+            // Count numbers of columns
             while (token) {
-                row = realloc(row, (count + 1) * sizeof(int));
-                if (!row) {
-                    perror("Memory allocation failed");
+                int *tmp_row = realloc(row, (count + 1) * sizeof(int));
+                if (tmp_row == NULL) {
+                    fprintf(stderr, "Memory allocation failed");
                     return 1;
                 }
-                value = atoi(token);
+                row = tmp_row;
+                char *end_ptr;
+                int value = (int) strtol(token, &end_ptr, 10);
+                if (end_ptr == token) {
+                    fprintf(stderr, "No digits were found.\n");
+                } else if (*end_ptr != '\0') {
+                    fprintf(stderr,  "Invalid character: %c\n", *end_ptr);
+                }
                 row[count++] = value;
                 token = strtok(NULL, " \t\n");
             }
@@ -51,22 +62,26 @@ int main(int argc, char *argv[]) {
             }
 
             matrix = realloc(matrix, (rows + 1) * sizeof(int *));
-            if (!matrix) {
-                perror("Memory allocation failed");
+            if (matrix == NULL) {
+                fprintf(stderr, "Memory allocation failed");
                 return 1;
             }
             matrix[rows++] = row;
         }
+        if (matrix == NULL) {
+            fprintf(stderr, "Memory allocation failed");
+            return 1;
+        }
         fclose(test_input_file);
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
-                fprintf(test_output_file, "%d ", matrix[i][j]);
+        for (int j = 0; j < rows; ++j) {
+            for (int k = 0; k < cols; ++k) {
+                fprintf(test_output_file, "%8d ", matrix[j][k]); // padding fill 8 digits
             }
             fprintf(test_output_file, "\n");
-            free(matrix[i]); // Free each row after printing
+            free(matrix[j]);
         }
-        free(matrix); // Free the matrix array
+        free(matrix);
         fclose(test_output_file);
     }
     return 0;
