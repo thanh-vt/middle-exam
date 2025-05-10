@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-int is_identity_block_left(int **A, int n, int m);
+int is_identity_block_left(int **A, int rows, int cols);
 
 /*
  * Test cases run command
- * Windows: .\FPLDLW25638FTP163.exe FFPLDLW25638FTP163IN01.txt FPLDLW25638FTP163OUT01.txt FPLDLW25638FTP163IN02.txt FPLDLW25638FTP163OUT02.txt FPLDLW25638FTP163IN03.txt FPLDLW25638FTP163OUT03.txt
- * Linux: ./FPLDLW25638FTP163 FFPLDLW25638FTP163IN01.txt FPLDLW25638FTP163OUT01.txt FPLDLW25638FTP163IN02.txt FPLDLW25638FTP163OUT02.txt FPLDLW25638FTP163IN03.txt FPLDLW25638FTP163OUT03.txt
+ * Windows: .\FPLDLW25638FTP163.exe FPLDLW25638FTP163IN01.txt FPLDLW25638FTP163OUT01.txt FPLDLW25638FTP163IN02.txt FPLDLW25638FTP163OUT02.txt FPLDLW25638FTP163IN03.txt FPLDLW25638FTP163OUT03.txt
+ * Linux: ./FPLDLW25638FTP163 FPLDLW25638FTP163IN01.txt FPLDLW25638FTP163OUT01.txt FPLDLW25638FTP163IN02.txt FPLDLW25638FTP163OUT02.txt FPLDLW25638FTP163IN03.txt FPLDLW25638FTP163OUT03.txt
 */
 int main(int argc, char *argv[]) {
     if (argc <= 2 || argc % 2 != 1) {
@@ -76,8 +76,8 @@ int main(int argc, char *argv[]) {
         }
         fclose(test_input_file);
 
-        // Kiểm tra
-        fprintf(test_output_file, "%d", is_identity_block_left(matrix, cols, rows));
+        // check
+        fprintf(test_output_file, "%d", is_identity_block_left(matrix, rows, cols));
 
         // free matrix
         for (int j = 0; j < rows; ++j) {
@@ -90,21 +90,18 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-// Hàm kiểm tra A có phải [I | P] không
-int is_identity_block_left(int **A, int n, int m) {
-    // Điều kiện tối thiểu: phải có m >= n (để ghép I_n bên trái)
-    if (m < n) return 0;
 
-    // Kiểm tra khối I_n ở cột 0..n-1
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            int expected = (i == j) ? 1 : 0;
+int is_identity_block_left(int **A, const int rows, const int cols) {
+    if (cols < rows) return 0;
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < rows; j++) {
+            int expected = i == j ? 1 : 0;
             if (A[i][j] != expected) {
                 return 0;
             }
         }
     }
 
-    // Phần P ở cột n..m-1 thì không cần kiểm tra gì thêm (bất kỳ giá trị nào cũng được)
     return 1;
 }
