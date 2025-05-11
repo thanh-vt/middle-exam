@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="FPLDLW25638FTP90" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="FPLDLW25638FTP90IN01.txt FPLDLW25638FTP90OUT01.txt FPLDLW25638FTP90IN02.txt FPLDLW25638FTP90OUT02.txt FPLDLW25638FTP90IN03.txt FPLDLW25638FTP90OUT03.txt" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="middle-exam" TARGET_NAME="FPLDLW25638FTP90" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="middle-exam" RUN_TARGET_NAME="FPLDLW25638FTP90">
+  <configuration default="false" name="FPLDLW25638FTP90" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="1 2 3" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="middle-exam" TARGET_NAME="FPLDLW25638FTP90" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="middle-exam" RUN_TARGET_NAME="FPLDLW25638FTP90">
     <method v="2">
       <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
     </method>

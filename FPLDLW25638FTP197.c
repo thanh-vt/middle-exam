@@ -4,22 +4,43 @@
 
 /*
  * Test cases run command
- * Windows: .\FPLDLW25638FTP197.exe FPLDLW25638FTP197IN01.txt FPLDLW25638FTP197OUT01.txt FPLDLW25638FTP197IN02.txt FPLDLW25638FTP197OUT02.txt FPLDLW25638FTP197IN03.txt FPLDLW25638FTP197OUT03.txt
- * Linux: ./FPLDLW25638FTP197 FPLDLW25638FTP197IN01.txt FPLDLW25638FTP197OUT01.txt FPLDLW25638FTP197IN02.txt FPLDLW25638FTP197OUT02.txt FPLDLW25638FTP197IN03.txt FPLDLW25638FTP197OUT03.txt
+ * Windows: .\FPLDLW25638FTP197.exe 1 2 3
+ * Linux: ./FPLDLW25638FTP197 1 2 3
 */
 int main(int argc, char *argv[]) {
-    if (argc <= 2 || argc % 2 != 1) {
-        fprintf(stderr, "Invalid number of arguments.\n");
-        return 1;
+    int* test_cases;
+    if (argc <= 1) {
+        fprintf(stderr, "No test cases provided, use default test cases: [01,02,03].\n");
+        test_cases = calloc(3, sizeof(int));
+        test_cases[0] = 1;
+        test_cases[1] = 2;
+        test_cases[2] = 3;
+    } else {
+        test_cases = calloc(argc - 1, sizeof(int));
+        int x;
+        for (int i = 1; i < argc; i++) {
+            if (sscanf(argv[i], "%d", &x) == EOF) {
+                fprintf(stderr, "Test case must be a number.\n");
+                return 1;
+            }
+            if (x >= 100 || x <= 0) {
+                fprintf(stderr, "Test case number min = 1, max = 99.\n");
+                return 1;
+            }
+            test_cases[i - 1] = x;
+        }
     }
-    for (int i = 1; i < argc; i += 2) {
-        char *test_input_filename = argv[i];
+    for (int i = 1; i < argc; i++) {
+        int test_case_number = test_cases[i - 1];
+        char test_input_filename[24];
+        sprintf(test_input_filename, "FPLDLW25638FTP197IN%02d.txt", test_case_number);
         FILE *test_input_file = fopen(test_input_filename, "r");
         if (test_input_file == NULL) {
             fprintf(stderr, "Test input file %s not found.\n", test_input_filename);
             return 2;
         }
-        char *test_output_filename = argv[i + 1];
+        char test_output_filename[25];
+        sprintf(test_output_filename, "FPLDLW25638FTP197OUT%02d.txt", test_case_number);
         FILE *test_output_file = fopen(test_output_filename, "w+");
         if (test_output_file == NULL) {
             fprintf(stderr, "Test output file %s not found.\n", test_output_filename);
@@ -84,5 +105,6 @@ int main(int argc, char *argv[]) {
         free(matrix);
         fclose(test_output_file);
     }
+    free(test_cases);
     return 0;
 }
